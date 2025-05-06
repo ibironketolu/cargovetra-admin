@@ -86,7 +86,7 @@ const TrackingTable = () => {
                         <tbody>
                             {shipments.map((entry, idx) => (
                                 <tr key={entry?.id} className="border-t">
-                                    <td className="px-4 py-2 border">{idx + 1}</td>
+                                    <td className="px-4 py-2 border">{entry?.id}</td>
                                     <td className="px-4 py-2 border">{entry?.tracking_id}</td>
                                     <td className="px-4 py-2 border">{entry?.sender?.name}</td>
                                     <td className="px-4 py-2 border">{entry?.receiver?.name}</td>
