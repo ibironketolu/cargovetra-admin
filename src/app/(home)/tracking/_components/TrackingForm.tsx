@@ -15,7 +15,7 @@ export default function TrackingForm() {
         date: Yup.date().required('Date is required'),
         remark: Yup.string().required('Remark is required'),
         status: Yup.string()
-            .oneOf(['in_transit', 'delivered', 'pending'], 'Invalid status')
+            .oneOf(['in_transit', 'delivered', 'on_hold'], 'Invalid status')
             .required('Status is required'),
     });
 
