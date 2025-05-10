@@ -5,6 +5,7 @@ import { DeleteShipment, getShipment } from "@/components/Utils/endPoints";
 import { APICall } from "@/components/Utils/extras";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const TrackingTable = () => {
     const router = useRouter();
@@ -53,6 +54,66 @@ const TrackingTable = () => {
         getShipments(currentPage, 15);
     }, []);
 
+    const handlePrintShipment = async (id: string) => {
+        if (!id) return toast.error("No shipment ID available.");
+
+        try {
+            const res = await fetch(`https://api.cargovetra.com/api/shipments/invoice/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch invoice.");
+
+            const blob = await res.blob();
+
+            // Assuming the response is a PDF or printable document
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.click();
+
+        } catch (error) {
+            console.error("Print error:", error);
+            toast.error("Failed to fetch invoice.");
+        }
+    };
+
+    const handlePrintWaybill = async (id: string) => {
+        if (!id) return toast.error("No shipment ID available.");
+
+        try {
+            const res = await fetch(`https://api.cargovetra.com/api/shipments/waybill/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch waybill.");
+
+            const blob = await res.blob();
+
+            // Assuming the response is a PDF or printable document
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.click();
+
+        } catch (error) {
+            console.error("Print error:", error);
+            toast.error("Failed to fetch invoice.");
+        }
+    };
+
+
+
     return (
         <div className="bg-[#0a101e] shadow h-screen rounded-lg p-6">
             <h2 className="text-lg font-semibold mb-1 text-white">List of Tracking Done</h2>
@@ -96,6 +157,18 @@ const TrackingTable = () => {
                                             className="bg-orange-400 text-white px-2 py-1 rounded text-xs"
                                         >
                                             Update
+                                        </button>
+                                        <button
+                                            onClick={() => handlePrintShipment(entry?.id)}
+                                            className="bg-green-400 text-white px-2 py-1 rounded text-xs"
+                                        >
+                                            Invoice
+                                        </button>
+                                        <button
+                                            onClick={() => handlePrintWaybill(entry?.id)}
+                                            className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                                        >
+                                            Waybill
                                         </button>
                                         <button
                                             onClick={() => handleDeleteClick(entry?.id)}
